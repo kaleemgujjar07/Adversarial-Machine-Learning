@@ -6,7 +6,6 @@ import torchvision.transforms as transforms
 from torchvision import models
 import foolbox as fb
 import numpy as np
-import json
 import matplotlib.pyplot as plt
 from huggingface_hub import hf_hub_download
 
@@ -23,11 +22,11 @@ def load_model():
     model.eval()
     return model
 
-with open('classes.json', 'r') as f:
-    classes = tuple(json.load(f))
-
 model = load_model()
 fmodel = fb.PyTorchModel(model, bounds=(-1, 1))
+
+# Classes are hardcoded here, so we don't need classes.json
+classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # 2. Streamlit UI
 st.title("🧠 Adversarial Machine Learning Demo (CIFAR-10)")
