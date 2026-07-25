@@ -18,7 +18,7 @@ def load_model():
     
     # Download the model from Hugging Face Hub
     # REPLACE 'YOUR_HF_USERNAME' with your actual Hugging Face username!
-    model_path = hf_hub_download(repo_id="YOUR_HF_USERNAME/cifar-resnet18", filename="cifar_resnet18.pth")
+    model_path = hf_hub_download(repo_id="https://huggingface.co/gujjarkaleem37/cifar-resnet18", filename="cifar_resnet18.pth")
     model.load_state_dict(torch.load(model_path, map_location='cpu'))
     model.eval()
     return model
