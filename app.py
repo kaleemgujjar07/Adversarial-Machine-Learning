@@ -8,14 +8,18 @@ import foolbox as fb
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+from huggingface_hub import hf_hub_download
 
 # 1. Load the Model and Classes
 @st.cache_resource
 def load_model():
     model = models.resnet18(weights=None)
     model.fc = nn.Linear(512, 10)
-    # Load the saved weights and map to CPU
-    model.load_state_dict(torch.load('cifar_resnet18.pth', map_location='cpu'))
+    
+    # Download the model from Hugging Face Hub
+    # REPLACE 'YOUR_HF_USERNAME' with your actual Hugging Face username!
+    model_path = hf_hub_download(repo_id="YOUR_HF_USERNAME/cifar-resnet18", filename="cifar_resnet18.pth")
+    model.load_state_dict(torch.load(model_path, map_location='cpu'))
     model.eval()
     return model
 
@@ -30,7 +34,7 @@ st.title("🧠 Adversarial Machine Learning Demo (CIFAR-10)")
 st.markdown("This app demonstrates how an FGSM attack can trick a Deep Learning model into making wrong predictions by adding invisible noise to an image.")
 st.write("---")
 
-# 3. Load CIFAR-10 Test Set (cached so it only downloads once)
+# 3. Load CIFAR-10 Test Set
 @st.cache_resource
 def load_data():
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -84,7 +88,6 @@ ax[0].set_title(f"Original Image\nTrue: {classes[test_label.item()]}\nPred: {cla
 ax[0].axis('off')
 
 # Perturbation (The Noise)
-# Amplify the noise so humans can see it
 perturbation_vis = perturbation.squeeze().detach().numpy()
 perturbation_vis = perturbation_vis / (2 * epsilon + 1e-8) + 0.5
 ax[1].imshow(np.clip(np.transpose(perturbation_vis, (1, 2, 0)), 0, 1))
