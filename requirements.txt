@@ -4,3 +4,4 @@ torchvision
 foolbox
 numpy
 Pillow
+huggingface-hub
